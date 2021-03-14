@@ -21,11 +21,25 @@ class ContactController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
-        //
+        //validate json payload for new order
+        //TODO: validate duplication of contacts
+        $validated = $request->validate([
+            'first' => 'required|string',
+            'last' => 'required|string',
+            'emails' => 'required|array|min:1',
+            'emails.*.email' => 'required|email',
+            'emails.*.primary' => 'required|boolean',
+            'phone-numbers' => 'required|array|min:1',
+            'phone-numbers.*.phone' => 'required|string|min:10|max:11',
+            'phone-numbers.*.primary' => 'required|boolean',
+        ]);
+        //create new contact
+        $contact = Contact::create($request->all());
+        return response()->json(['id' => $contact->id], 201);
     }
 
     /**

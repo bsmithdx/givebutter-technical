@@ -13,6 +13,7 @@ class CreateContactsTable extends Migration
      */
     public function up()
     {
+        //TODO: add constraints to fields to properly maintain unique contacts
         Schema::create('contacts', function (Blueprint $table) {
             $table->id();
             $table->string('first');

@@ -17,7 +17,7 @@ class PostTest extends TestCase
     public function test_api_contact_post_failed()
     {
         //Don't include all required data for a contact
-        $response = $this->postJson('api/contact', [
+        $response = $this->postJson('api/contacts', [
             'first' => 'Sally',
             'last' => 'Jones',
         ]);
@@ -34,9 +34,9 @@ class PostTest extends TestCase
      */
     public function test_api_contact_post_created()
     {
-        $response = $this->postJson('api/contact', [
-            'firstName' => 'Sally',
-            'lastName' => 'Jones',
+        $response = $this->postJson('api/contacts', [
+            'first' => 'Sally',
+            'last' => 'Jones',
             'emails' => [
                 [
                     'email' => 'sally.jones@firstplace.com',
