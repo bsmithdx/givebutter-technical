@@ -18,7 +18,7 @@ class PatchTest extends TestCase
     public function test_api_contact_patch_failed()
     {
         //Try to update a non-existent contact
-        $response = $this->patchJson('api/contact/4', [
+        $response = $this->patchJson('api/contacts/4', [
             'id' => 4,
             'first' => 'new-first',
             'last' => 'new-last',
@@ -45,15 +45,14 @@ class PatchTest extends TestCase
             ->create();
         //assert that our new models are alone in the database
         $this->assertDatabaseCount('contacts', 1);
-        $response = $this->patchJson('api/contact/1', [
+        $response = $this->patchJson('api/contacts/1', [
             'id' => 1,
             'first' => 'new-first',
             'last' => 'new-last',
         ]);
 
-        //assert that the model and database table reflect a change to the fulfilled attribute
+        //assert that the model and database table reflect a change to the contacts attributes
         $contact->refresh();
-        $this->assertTrue($contact->fulfilled);
         $this->assertDatabaseHas('contacts', [
             'id' => 1,
             'first' => 'new-first',

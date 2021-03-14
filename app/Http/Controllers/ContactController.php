@@ -46,12 +46,27 @@ class ContactController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Contact  $contact
-     * @return \Illuminate\Http\Response
+     * @param  int  $contactId
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, Contact $contact)
+    public function update(Request $request, $contactId)
     {
-        //
+        //validate the JSON payload
+        //TODO: validate duplication of contacts
+        $validated = $request->validate([
+            'first' => 'string',
+            'last' => 'string',
+        ]);
+        //validate that the contact exists
+        $contact = Contact::find($contactId);
+        if(!$contact) {
+            return response()->json(['message' => 'resource not found'], 404);
+        }
+        //modify the contacts attributes
+        $contact->fill($request->all());
+        $contact->save();
+
+        return response()->json(['message' => 'resource updated successfully']);
     }
 
     /**
