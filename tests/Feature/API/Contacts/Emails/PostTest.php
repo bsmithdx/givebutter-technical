@@ -19,12 +19,23 @@ class PostTest extends TestCase
     {
         //Try and set emails on a non-existent contact
         $response = $this->postJson('api/contacts/1/emails', [
-            'first' => 'Sally',
-            'last' => 'Jones',
+            'emails' => [
+                [
+                    'email' => 'thirdoption@thirdplace.com',
+                    'primary' => true,
+                ],
+                [
+                    'email' => 'fourthoption@fourthplace.com',
+                    'primary' => false,
+                ]
+            ],
         ]);
 
-        //assert that the resource was not found (404)
-        $response->assertStatus(404);
+        //assert that the resource is not found (404)
+        $response->assertStatus(404)
+            ->assertJson([
+                'message' => 'resource not found'
+            ]);
     }
 
 

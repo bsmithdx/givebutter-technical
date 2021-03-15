@@ -17,17 +17,17 @@ class EmailController extends Controller
      */
     public function store(Request $request, int $contactId)
     {
+        //validate that the contact exists
+        $contact = Contact::find($contactId);
+        if(!$contact) {
+            return response()->json(['message' => 'resource not found'], 404);
+        }
         //validate json payload for new contact
         //TODO: validate emails (only allow one primary)
         $validated = $request->validate([
             'emails.*.email' => 'required|email',
             'emails.*.primary' => 'required|boolean',
         ]);
-        //validate that the contact exists
-        $contact = Contact::find($contactId);
-        if(!$contact) {
-            return response()->json(['message' => 'resource not found'], 404);
-        }
         //set the contact's emails
         $contact->emails = $request->input('emails');
         $contact->save();
@@ -43,7 +43,28 @@ class EmailController extends Controller
      */
     public function update(Request $request, int $contactId)
     {
-        //
+        //validate that the contact exists
+        $contact = Contact::find($contactId);
+        if(!$contact) {
+            return response()->json(['message' => 'resource not found'], 404);
+        }
+        //validate the JSON payload
+        //TODO: validate emails (check for existing primary if adding primary)
+        //TODO: validate emails (check for duplicates)
+        $validated = $request->validate([
+            'emails.*.email' => 'required|email',
+            'emails.*.primary' => 'required|boolean',
+        ]);
+        //modify the contacts attributes
+        $contact->emails = array_merge($contact->emails, [
+            [
+                'email' => $request->input('email'),
+                'primary' => $request->input('primary')
+                ]
+        ]);
+        $contact->save();
+
+        return response()->json(['message' => 'resource updated successfully']);
     }
 
     /**

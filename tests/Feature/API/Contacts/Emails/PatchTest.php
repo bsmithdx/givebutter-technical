@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\API\Contacts;
+namespace Tests\Feature\API\Contacts\Emails;
 
 use App\Models\Contact;
 use Tests\TestCase;
@@ -11,17 +11,16 @@ class PatchTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * Tests that sending a PATCH request with an id of a model that is not in the database results in a 404
+     * Tests that sending a PATCH request with an id of a contact that is not in the database results in a 404
      *
      * @return void
      */
-    public function test_api_contact_patch_failed()
+    public function test_api_contact_emails_patch_failed()
     {
-        //Try to update a non-existent contact
-        $response = $this->patchJson('api/contacts/4', [
-            'id' => 4,
-            'first' => 'new-first',
-            'last' => 'new-last',
+        //Try and set emails on a non-existent contact
+        $response = $this->postJson('api/contacts/1/emails', [
+                    'email' => 'thirdoption@thirdplace.com',
+                    'primary' => false,
         ]);
 
         //assert that the resource is not found (404)
@@ -33,28 +32,34 @@ class PatchTest extends TestCase
 
 
     /**
-     * Tests that sending a PATCH request for an contact that DOES exist in the database results in that contact's
-     * attributes (other than emails and phone-numbers) being correctly modified
+     * Tests that sending a PATCH request for a contact's emails results in adding a new email for that contact
      *
      * @return void
      */
-    public function test_api_contact_patch_success()
+    public function test_api_contact_emails_patch_success()
     {
         //create new contact from factory
         $contact = contact::factory()
             ->create();
+        //store the contact's current emails
+        $currentEmails = $contact->emails;
         //assert that our new models are alone in the database
         $this->assertDatabaseCount('contacts', 1);
-        $response = $this->patchJson('api/contacts/1', [
-            'first' => 'new-first',
-            'last' => 'new-last',
+        $response = $this->patchjson('api/contacts/1/emails', [
+            'email' => 'thirdoption@thirdplace.com',
+            'primary' => false,
         ]);
 
         //assert that the model and database table reflect a change to the contacts attributes
         $contact->refresh();
         $this->assertDatabaseHas('contacts', [
-            'first' => 'new-first',
-            'last' => 'new-last',
+            'id' => 1,
+            'emails' => json_encode(array_merge($currentEmails,[
+                [
+                    'email' => 'thirdoption@thirdplace.com',
+                    'primary' => false,
+                ]
+            ])),
         ]);
         //assert that we receive an http status of 200
         $response

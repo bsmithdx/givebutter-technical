@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Route;
 */
 //Add route to set emails for an existing contact
 Route::post('/contacts/{contactId}/emails', [EmailController::class, 'store']);
+//Add route to add email for an existing contact
+Route::patch('/contacts/{contactId}/emails', [EmailController::class, 'update']);
 
 //Route::get('/contacts/{contact}/phone-numbers', [ContactController::class, 'store']);
 

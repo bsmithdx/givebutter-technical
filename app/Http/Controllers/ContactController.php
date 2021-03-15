@@ -8,16 +8,6 @@ use Illuminate\Http\Request;
 class ContactController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -54,17 +44,17 @@ class ContactController extends Controller
      */
     public function update(Request $request, int $contactId)
     {
+        //validate that the contact exists
+        $contact = Contact::find($contactId);
+        if(!$contact) {
+            return response()->json(['message' => 'resource not found'], 404);
+        }
         //validate the JSON payload
         //TODO: validate duplication of contacts
         $validated = $request->validate([
             'first' => 'string',
             'last' => 'string',
         ]);
-        //validate that the contact exists
-        $contact = Contact::find($contactId);
-        if(!$contact) {
-            return response()->json(['message' => 'resource not found'], 404);
-        }
         //modify the contacts attributes
         $contact->fill($request->all());
         $contact->save();
