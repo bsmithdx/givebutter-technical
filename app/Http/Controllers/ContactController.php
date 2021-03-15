@@ -25,8 +25,10 @@ class ContactController extends Controller
      */
     public function store(Request $request)
     {
-        //validate json payload for new order
+        //validate json payload for new contact
         //TODO: validate duplication of contacts
+        //TODO: validate emails (only allow one primary)
+        //TODO: validate phone-numbers (only allow one primary)
         $validated = $request->validate([
             'first' => 'required|string',
             'last' => 'required|string',
@@ -44,12 +46,13 @@ class ContactController extends Controller
 
     /**
      * Update the specified resource in storage.
+     * NOTE: Only allows updating of first and last name attributes
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $contactId
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, $contactId)
+    public function update(Request $request, int $contactId)
     {
         //validate the JSON payload
         //TODO: validate duplication of contacts
@@ -73,9 +76,10 @@ class ContactController extends Controller
      * Merge the specified contact with another contact by id.
      *
      * @param  \App\Models\Contact  $contact
+     * @param int $contactId
      * @return \Illuminate\Http\Response
      */
-    public function merge(Contact $contact)
+    public function merge(int $contactId)
     {
         //
     }

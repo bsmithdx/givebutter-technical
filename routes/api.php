@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Http\Request;
-use \App\Http\Controllers\ContactController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\Contact\EmailController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,18 +15,17 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+//Add route to set emails for an existing contact
+Route::post('/contacts/{contactId}/emails', [EmailController::class, 'store']);
 
-//Route::get('/contacts/{contact}/emails', [ContactController::class, 'emails']);
+//Route::get('/contacts/{contact}/phone-numbers', [ContactController::class, 'store']);
 
-//Route::get('/contacts/{contact}/phone-numbers', [ContactController::class, 'phoneNumbers']);
-
+//Add route to merge contacts
 Route::get('/contacts/{contact}/merge', [ContactController::class, 'merge']);
-
-Route::apiResource('contacts',ContactController::class)->only([
+//Add limited api routing for contacts resource
+Route::apiResource('contacts', ContactController::class)->only([
     'store',
-    'show',
     'update',
-    'destroy',
 ]);
 
 Route::any('{any}', function ($any) {

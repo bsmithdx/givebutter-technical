@@ -46,7 +46,6 @@ class PatchTest extends TestCase
         //assert that our new models are alone in the database
         $this->assertDatabaseCount('contacts', 1);
         $response = $this->patchJson('api/contacts/1', [
-            'id' => 1,
             'first' => 'new-first',
             'last' => 'new-last',
         ]);
@@ -54,7 +53,6 @@ class PatchTest extends TestCase
         //assert that the model and database table reflect a change to the contacts attributes
         $contact->refresh();
         $this->assertDatabaseHas('contacts', [
-            'id' => 1,
             'first' => 'new-first',
             'last' => 'new-last',
         ]);
