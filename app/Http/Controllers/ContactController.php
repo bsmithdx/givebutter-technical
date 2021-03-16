@@ -26,7 +26,7 @@ class ContactController extends Controller
             'emails.*.email' => 'required|email',
             'emails.*.primary' => 'required|boolean',
             'phone_numbers' => 'required|array|min:1',
-            'phone_numbers.*.phone' => 'required|string|min:10|max:15',
+            'phone_numbers.*.phone' => 'required|string|min:10|max:20',
             'phone_numbers.*.primary' => 'required|boolean',
         ]);
         //create new contact
@@ -65,12 +65,28 @@ class ContactController extends Controller
     /**
      * Merge the specified contact with another contact by id.
      *
-     * @param  \App\Models\Contact  $contact
+     * @param  \Illuminate\Http\Request  $request
      * @param int $contactId
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function merge(int $contactId)
+    public function merge(Request $request, int $contactId)
     {
-        //
+        //validate that the contact exists
+        $contact = Contact::find($contactId);
+        if(!$contact) {
+            return response()->json(['message' => 'resource not found'], 404);
+        }
+        //validate json payload for merging contact
+        $validated = $request->validate([
+            'contact_to_merge_id' => 'required|exists:contacts,id'
+        ]);
+        $contactToMerge = Contact::find($request->input('contact_to_merge_id'));
+        //merge emails
+        $contact->emails = array_values(array_unique(array_merge($contact->emails, $contactToMerge->emails), SORT_REGULAR));
+        //merge phone numbers
+        $contact->phone_numbers = array_values(array_unique(array_merge($contact->phone_numbers, $contactToMerge->phone_numbers), SORT_REGULAR));
+        $contact->save();
+        $contactToMerge->delete();
+        return response()->json(['id' => $contact->id], 200);
     }
 }

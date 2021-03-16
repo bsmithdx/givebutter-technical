@@ -30,10 +30,8 @@ Route::patch('/contacts/{contactId}/phone-numbers', [PhoneController::class, 'up
 //Add route to remove phone number from an existing contact
 Route::delete('/contacts/{contactId}/phone-numbers', [PhoneController::class, 'destroy']);
 
-//Route::get('/contacts/{contact}/phone_numbers', [ContactController::class, 'store']);
-
 //Add route to merge contacts
-Route::get('/contacts/{contact}/merge', [ContactController::class, 'merge']);
+Route::post('/contacts/{contact}/merge', [ContactController::class, 'merge']);
 //Add limited api routing for contacts resource
 Route::apiResource('contacts', ContactController::class)->only([
     'store',

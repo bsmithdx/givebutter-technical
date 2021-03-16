@@ -25,7 +25,7 @@ class PhoneController extends Controller
         //validate json payload for new contact
         //TODO: validate phone numbers (only allow one primary)
         $validated = $request->validate([
-            'phone_numbers.*.phone' => 'required|string|min:10|max:15',
+            'phone_numbers.*.phone' => 'required|string|min:10|max:20',
             'phone_numbers.*.primary' => 'required|boolean',
         ]);
         //set the contact's phone numbers
@@ -50,7 +50,7 @@ class PhoneController extends Controller
         }
         //validate the JSON payload
         $validated = $request->validate([
-            'phone' => 'required|string|min:10|max:15',
+            'phone' => 'required|string|min:10|max:20',
             'primary' => 'required|boolean',
         ]);
         if ($request->input('primary')) {
@@ -85,7 +85,7 @@ class PhoneController extends Controller
         }
         //validate the JSON payload
         $validated = $request->validate([
-            'phone' => 'required|string|min:10|max:15',
+            'phone' => 'required|string|min:10|max:20',
         ]);
         //filter the contacts phone numbers to remove the passed phone number and then re-index by value (to ensure json column data format)
         $contact->phone_numbers = array_values(array_filter($contact->phone_numbers, fn($v) => $v['phone'] !== $request->input('phone')));
