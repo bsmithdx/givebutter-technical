@@ -49,12 +49,14 @@ class EmailController extends Controller
             return response()->json(['message' => 'resource not found'], 404);
         }
         //validate the JSON payload
-        //TODO: validate emails (check for existing primary if adding primary)
-        //TODO: validate emails (check for duplicates)
         $validated = $request->validate([
-            'emails.*.email' => 'required|email',
-            'emails.*.primary' => 'required|boolean',
+            'email' => 'required|email',
+            'primary' => 'required|boolean',
         ]);
+        if ($request->input('primary')) {
+            //TODO: return 422 if there is already a primary email set
+        }
+        //TODO: handle duplicate email (don't add, but allow changing of primary value)
         //modify the contacts attributes
         $contact->emails = array_merge($contact->emails, [
             [
@@ -68,13 +70,27 @@ class EmailController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified email from the contact.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  int $contactId
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(int $contactId)
+    public function destroy(Request $request, int $contactId)
     {
-        //
+        //validate that the contact exists
+        $contact = Contact::find($contactId);
+        if(!$contact) {
+            return response()->json(['message' => 'resource not found'], 404);
+        }
+        //validate the JSON payload
+        $validated = $request->validate([
+            'email' => 'required|email',
+        ]);
+        //filter the contacts emails to remove the passed email and then re-index by value (to ensure json column data format)
+        $contact->emails = array_values(array_filter($contact->emails, fn($v) => $v['email'] !== $request->input('email')));
+        $contact->save();
+
+        return response()->json(['message' => 'resource deleted successfully']);
     }
 }
