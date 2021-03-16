@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Contact;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ContactController extends Controller
 {
@@ -20,7 +21,20 @@ class ContactController extends Controller
         //TODO: validate emails (only allow one primary)
         //TODO: validate phone_numbers (only allow one primary)
         $validated = $request->validate([
-            'first' => 'required|string',
+            'first' => [
+                'required',
+                'string',
+                function ($attribute, $value, $fail) use ($request) {
+                    //test for duplicate contact during validation
+                    $count = DB::table('contacts')->where('first', $request->input('first'))
+                        ->where('last', $request->input('last'))
+                        ->count();
+
+                    if ($count !== 0) {
+                        $fail('Duplicate contact. That contact already exists in the system');
+                    }
+                },
+            ],
             'last' => 'required|string',
             'emails' => 'required|array|min:1',
             'emails.*.email' => 'required|email',
@@ -78,7 +92,7 @@ class ContactController extends Controller
         }
         //validate json payload for merging contact
         $validated = $request->validate([
-            'contact_to_merge_id' => 'required|exists:contacts,id'
+            'contact_to_merge_id' => 'required|exists:App\Models\Contact,id'
         ]);
         $contactToMerge = Contact::find($request->input('contact_to_merge_id'));
         //merge emails
