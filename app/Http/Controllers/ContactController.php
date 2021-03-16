@@ -18,16 +18,16 @@ class ContactController extends Controller
         //validate json payload for new contact
         //TODO: validate duplication of contacts
         //TODO: validate emails (only allow one primary)
-        //TODO: validate phone-numbers (only allow one primary)
+        //TODO: validate phone_numbers (only allow one primary)
         $validated = $request->validate([
             'first' => 'required|string',
             'last' => 'required|string',
             'emails' => 'required|array|min:1',
             'emails.*.email' => 'required|email',
             'emails.*.primary' => 'required|boolean',
-            'phone-numbers' => 'required|array|min:1',
-            'phone-numbers.*.phone' => 'required|string|min:10|max:11',
-            'phone-numbers.*.primary' => 'required|boolean',
+            'phone_numbers' => 'required|array|min:1',
+            'phone_numbers.*.phone' => 'required|string|min:10|max:15',
+            'phone_numbers.*.primary' => 'required|boolean',
         ]);
         //create new contact
         $contact = Contact::create($request->all());

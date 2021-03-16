@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\Contact\EmailController;
+use App\Http\Controllers\Contact\PhoneController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,7 +23,14 @@ Route::patch('/contacts/{contactId}/emails', [EmailController::class, 'update'])
 //Add route to remove email from an existing contact
 Route::delete('/contacts/{contactId}/emails', [EmailController::class, 'destroy']);
 
-//Route::get('/contacts/{contact}/phone-numbers', [ContactController::class, 'store']);
+//Add route to set phone numbers for an existing contact
+Route::post('/contacts/{contactId}/phone-numbers', [PhoneController::class, 'store']);
+//Add route to add phone number for an existing contact
+Route::patch('/contacts/{contactId}/phone-numbers', [PhoneController::class, 'update']);
+//Add route to remove phone number from an existing contact
+Route::delete('/contacts/{contactId}/phone-numbers', [PhoneController::class, 'destroy']);
+
+//Route::get('/contacts/{contact}/phone_numbers', [ContactController::class, 'store']);
 
 //Add route to merge contacts
 Route::get('/contacts/{contact}/merge', [ContactController::class, 'merge']);

@@ -35,7 +35,7 @@ class ContactFactory extends Factory
                     'primary' => false,
                 ],
             ],
-            'phone-numbers' => [
+            'phone_numbers' => [
                 [
                     'phone' => $this->faker->phoneNumber,
                     'primary' => true,

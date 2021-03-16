@@ -34,7 +34,7 @@ class PatchTest extends TestCase
 
     /**
      * Tests that sending a PATCH request for an contact that DOES exist in the database results in that contact's
-     * attributes (other than emails and phone-numbers) being correctly modified
+     * attributes (other than emails and phone_numbers) being correctly modified
      *
      * @return void
      */

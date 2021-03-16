@@ -18,7 +18,7 @@ class Contact extends Model
         'first',
         'last',
         'emails',
-        'phone-numbers',
+        'phone_numbers',
     ];
 
     /**
@@ -28,7 +28,7 @@ class Contact extends Model
      */
     protected $casts = [
         'emails' => 'json',
-        'phone-numbers' => 'json',
+        'phone_numbers' => 'json',
     ];
 
     public function getPrimaryEmail() {

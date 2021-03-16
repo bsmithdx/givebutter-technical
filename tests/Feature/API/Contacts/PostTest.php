@@ -47,7 +47,7 @@ class PostTest extends TestCase
                     'primary' => false,
                 ],
             ],
-            'phone-numbers' => [
+            'phone_numbers' => [
                 [
                     'phone' => '8029881983',
                     'primary' => true,
